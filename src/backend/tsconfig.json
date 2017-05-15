@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "noImplicitAny": false,
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "sourceMap": true,
+    "outDir": "../../dist",
+    "target": "esnext",
+    "typeRoots": [
+      "../../node_modules/@types"
+    ]
+  }
+}

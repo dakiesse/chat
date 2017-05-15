@@ -1,6 +1,6 @@
 import * as Pug from 'koa-pug'
 import { resolve } from 'path'
-import { APP_PATH } from '../configs/constants'
+import { APP_PATH } from 'configs/constants'
 
 export default new Pug({
   compileDebug: false,
