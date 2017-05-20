@@ -7,4 +7,8 @@ router.get('/', (ctx: Application.Context): void => {
   ctx.render('index')
 })
 
+router.get('**', (ctx: Application.Context): void => {
+  ctx.render('index')
+})
+
 export default router
