@@ -3,7 +3,7 @@ import { dsn } from 'configs/database'
 import * as chalk from 'chalk'
 
 (mongoose as any).Promise = global.Promise
-mongoose.connect(dsn)
+mongoose.connect(dsn, { useMongoClient: true })
 
 const db = mongoose.connection
 
