@@ -1,4 +1,4 @@
-import * as chalk from 'chalk'
+import chalk from 'chalk'
 import * as Koa from 'koa'
 
 import './providers/dotenv'
@@ -8,7 +8,7 @@ import applyMiddlewares from './middlewares'
 import applyRoutes from './routes'
 
 const app: Koa = new Koa()
-const port: number = process.env.APP_PORT || 3000
+const port: number = Number(process.env.APP_PORT) || 3000
 
 app.use(async (ctx, next): Promise<any> => {
   try {

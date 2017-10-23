@@ -1,4 +1,4 @@
-import { IStrategyOption } from 'passport-facebook'
+import { StrategyOption as FacebookStrategyOption } from 'passport-facebook'
 import { IOAuth2StrategyOption } from 'passport-google-oauth'
 import { ExtractJwt, StrategyOptions as JwtStrategyOptions } from 'passport-jwt'
 import { JWT_SECRET } from 'configs/constants'
@@ -8,7 +8,7 @@ export const strategies = {
     clientID: process.env.FACEBOOK_CLIENT_ID,
     clientSecret: process.env.FACEBOOK_CLIENT_SECRET,
     callbackURL: process.env.FACEBOOK_CALLBACK_URL,
-  } as IStrategyOption,
+  } as FacebookStrategyOption,
 
   googleAuth: {
     clientID: process.env.GOOGLE_CLIENT_ID,
@@ -17,7 +17,7 @@ export const strategies = {
   } as IOAuth2StrategyOption,
 
   jwtAuth: {
-    jwtFromRequest: ExtractJwt.fromAuthHeader(),
+    jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
     secretOrKey: JWT_SECRET,
   } as JwtStrategyOptions,
 }

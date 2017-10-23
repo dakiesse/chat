@@ -1,4 +1,4 @@
 import { config } from 'dotenv'
-import * as dotenvConfig from '../configs/dotenv'
+import dotenvConfig from '../configs/dotenv'
 
 config(dotenvConfig)

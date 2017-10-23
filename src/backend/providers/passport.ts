@@ -1,12 +1,17 @@
 import * as passport from 'koa-passport'
 import { Strategy as JwtStrategy } from 'passport-jwt'
-import { Profile, Strategy as FacebookStrategy } from 'passport-facebook'
-import { OAuth2Strategy as GoogleStrategy } from 'passport-google-oauth'
+import { Strategy as FacebookStrategy, Profile as FacebookProfile } from 'passport-facebook'
+import { OAuth2Strategy as GoogleStrategy, Profile as GoogleProfile } from 'passport-google-oauth'
 import { User } from 'entities/user'
 import { strategies } from 'configs/passport'
+import { PASSPORT_FACEBOOK_PROVIDER_ID, PASSPORT_GOOGLE_PROVIDER_ID } from 'configs/constants'
 
 type PassportSerializerNext = (err: Error, id: any) => void
 type Done = (error: any, user?: any, info?: any) => void
+
+const env = process.env
+const FACEBOOK_HAS_API: boolean = Boolean(env.FACEBOOK_CLIENT_ID && env.FACEBOOK_CLIENT_SECRET)
+const GOOGLE_HAS_API: boolean = Boolean(env.GOOGLE_CLIENT_ID && env.GOOGLE_CLIENT_SECRET)
 
 passport.serializeUser((user: any, done: PassportSerializerNext): void => {
   done(null, user._id)
@@ -29,48 +34,57 @@ passport.use(
       }
     }),
 )
-passport.use(
-  new FacebookStrategy(
-    strategies.facebookAuth,
-    async (accessToken: string, refreshToken: string, profile: Profile, done: Done): Promise<void> => {
-      try {
-        let user = await User.findOne({ provider_id: 0, profile_id: profile.id })
-        console.log('User is ' + user)
-        if (!user) {
-          user = await User.create({
-            provider_id: 0,
-            profile_id: profile.id,
-            username: profile.displayName,
-          })
+
+if (FACEBOOK_HAS_API) {
+  passport.use(
+    new FacebookStrategy(
+      strategies.facebookAuth,
+      async (accessToken: string, refreshToken: string, profile: FacebookProfile, done: Done): Promise<void> => {
+        try {
+          let user = await User.findOne({provider_id: PASSPORT_FACEBOOK_PROVIDER_ID, profile_id: profile.id})
+
+          console.log('User is ' + user)
+
+          if (!user) {
+            user = await User.create({
+              provider_id: PASSPORT_FACEBOOK_PROVIDER_ID,
+              profile_id: profile.id,
+              username: profile.displayName,
+            })
+          }
+
+          return done(null, user)
+        } catch (err) {
+          return done(err)
         }
+      },
+    ),
+  )
+}
 
-        return done(null, user)
-      } catch (err) {
-        return done(err)
-      }
-    },
-  ),
-)
+if (GOOGLE_HAS_API) {
+  passport.use(
+    new GoogleStrategy(
+      strategies.googleAuth,
+      async (accessToken: string, refreshToken: string, profile: GoogleProfile, done: Done): Promise<void> => {
+        try {
+          let user = await User.findOne({provider_id: PASSPORT_GOOGLE_PROVIDER_ID, profile_id: profile.id})
 
-passport.use(
-  new GoogleStrategy(
-    strategies.googleAuth,
-    async (accessToken: string, refreshToken: string, profile: Profile, done: Done): Promise<void> => {
-      try {
-        let user = await User.findOne({ provider_id: 1, profile_id: profile.id })
-        console.log('User is ' + user)
-        if (!user) {
-          user = await User.create({
-            provider_id: 1,
-            profile_id: profile.id,
-            username: profile.displayName,
-          })
+          console.log('User is ' + user)
+
+          if (!user) {
+            user = await User.create({
+              provider_id: PASSPORT_GOOGLE_PROVIDER_ID,
+              profile_id: profile.id,
+              username: profile.displayName,
+            })
+          }
+
+          return done(null, user)
+        } catch (err) {
+          return done(err)
         }
-
-        return done(null, user)
-      } catch (err) {
-        return done(err)
-      }
-    },
-  ),
-)
+      },
+    ),
+  )
+}

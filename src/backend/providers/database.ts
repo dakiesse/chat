@@ -1,6 +1,6 @@
 import * as mongoose from 'mongoose'
 import { dsn } from 'configs/database'
-import * as chalk from 'chalk'
+import chalk from 'chalk'
 
 (mongoose as any).Promise = global.Promise
 mongoose.connect(dsn, { useMongoClient: true })
